@@ -1,4 +1,5 @@
-import 'package:fiery_gg/ui/home.dart';
+import 'package:fiery_gg/ui/dashboard.dart';
+import 'package:fiery_gg/ui/resources/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -49,7 +50,10 @@ class SplashScreenState extends State<SplashScreen>
         _controller.forward();
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const Home()),
+          MaterialPageRoute(
+              builder: (context) => Dashboard(
+                    config: LayoutConfig(),
+                  )),
         );
       }
     }
@@ -96,7 +100,8 @@ class SplashScreenState extends State<SplashScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildSocialLink('assets/images/github.svg', 'github.com'),
+        _buildSocialLink(
+            'assets/images/github.svg', 'github.com/TilarnaExdilika'),
         const SizedBox(height: 10),
         _buildSocialLink('assets/images/discord.svg', '_tilarna'),
         const SizedBox(height: 10),
