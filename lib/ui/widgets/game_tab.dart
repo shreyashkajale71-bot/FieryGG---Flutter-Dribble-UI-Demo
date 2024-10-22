@@ -25,17 +25,13 @@ class _GameTabState extends State<GameTab> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            controller: _verticalScrollController,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: constraints.maxWidth < 650
-                  ? _buildLayout(isScrollable: true)
-                  : _buildLayout(isScrollable: false),
-            ),
-          );
-        },
+        builder: (context, constraints) => SingleChildScrollView(
+          controller: _verticalScrollController,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: _buildLayout(isScrollable: constraints.maxWidth < 650),
+          ),
+        ),
       ),
     );
   }
@@ -43,77 +39,75 @@ class _GameTabState extends State<GameTab> {
   Widget _buildLayout({required bool isScrollable}) {
     final gameCards = _buildGameCards(isScrollable: isScrollable);
 
-    if (isScrollable) {
-      return Column(
-        children: [
-          SizedBox(
-            height: 250,
-            child: MouseRegion(
-              onEnter: (_) => _startPosition = Offset.zero,
-              child: Listener(
-                onPointerDown: (event) => _startPosition = event.position,
-                onPointerMove: (event) {
-                  if (event.kind == PointerDeviceKind.mouse &&
-                      event.buttons == kPrimaryButton) {
-                    final delta = _startPosition - event.position;
-                    _horizontalScrollController.position.moveTo(
-                      _horizontalScrollController.offset + delta.dx,
-                      curve: Curves.linear,
-                      duration: Duration.zero,
-                    );
-                    _startPosition = event.position;
-                  }
-                },
-                child: ListView.builder(
-                  controller: _horizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: gameCards.length,
-                  itemBuilder: (context, index) => gameCards[index],
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: 250,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
+          child: isScrollable
+              ? _buildCardLayout(gameCards)
+              : _buildGridLayout(gameCards),
+        ),
+        const SizedBox(height: 10),
+        //new widget
+      ],
+    );
+  }
+
+  Widget _buildCardLayout(List<Widget> gameCards) {
+    return MouseRegion(
+      onEnter: (_) => _startPosition = Offset.zero,
+      child: Listener(
+        onPointerDown: (event) => _startPosition = event.position,
+        onPointerMove: (event) {
+          if (event.kind == PointerDeviceKind.mouse &&
+              event.buttons == kPrimaryButton) {
+            final delta = _startPosition - event.position;
+            _horizontalScrollController.position.moveTo(
+              _horizontalScrollController.offset + delta.dx,
+              curve: Curves.linear,
+              duration: Duration.zero,
+            );
+            _startPosition = event.position;
+          }
+        },
+        child: ListView.builder(
+          controller: _horizontalScrollController,
+          scrollDirection: Axis.horizontal,
+          itemCount: gameCards.length,
+          itemBuilder: (context, index) => gameCards[index],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridLayout(List<Widget> gameCards) {
+    return Row(
+      children: [
+        Expanded(flex: 2, child: gameCards[0]),
+        Expanded(
+          flex: 3,
+          child: Column(
             children: [
-              Expanded(flex: 2, child: gameCards[0]),
               Expanded(
-                flex: 3,
-                child: Column(
+                child: Row(
                   children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(child: gameCards[1]),
-                          Expanded(flex: 2, child: gameCards[2]),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(flex: 2, child: gameCards[3]),
-                          Expanded(child: gameCards[4]),
-                        ],
-                      ),
-                    ),
+                    Expanded(child: gameCards[1]),
+                    Expanded(flex: 2, child: gameCards[2]),
                   ],
                 ),
               ),
-              Expanded(flex: 2, child: gameCards[5]),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(flex: 2, child: gameCards[3]),
+                    Expanded(child: gameCards[4]),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
+        Expanded(flex: 2, child: gameCards[5]),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:fiery_gg/ui/models/chats.dart';
 import 'package:fiery_gg/ui/models/tabs.dart';
+import 'package:fiery_gg/ui/widgets/chat_item.dart';
 import 'package:fiery_gg/ui/widgets/online_chats.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

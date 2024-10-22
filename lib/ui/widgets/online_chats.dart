@@ -1,5 +1,5 @@
-import 'package:fiery_gg/ui/models/chats.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
+import 'package:fiery_gg/ui/widgets/chat_item.dart';
 import 'package:flutter/material.dart';
 
 class OnlineChats extends StatelessWidget {
