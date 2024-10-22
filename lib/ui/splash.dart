@@ -21,24 +21,28 @@ class SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    _setupAnimations();
+    _controller.addStatusListener(_animationStatusListener);
+    _controller.forward();
+  }
+
+  void _setupAnimations() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3500),
     );
-    _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeInAnimation = _createAnimation(0.0, 1.0, 0.0, 0.5, Curves.easeIn);
+    _fadeOutAnimation = _createAnimation(1.0, 0.0, 0.5, 1.0, Curves.easeOut);
+  }
+
+  Animation<double> _createAnimation(double begin, double end,
+      double startInterval, double endInterval, Curve curve) {
+    return Tween<double>(begin: begin, end: end).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+        curve: Interval(startInterval, endInterval, curve: curve),
       ),
     );
-    _fadeOutAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 1.0, curve: Curves.easeOut),
-      ),
-    );
-    _controller.addStatusListener(_animationStatusListener);
-    _controller.forward();
   }
 
   void _animationStatusListener(AnimationStatus status) {
@@ -73,16 +77,18 @@ class SplashScreenState extends State<SplashScreen>
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
-          builder: (context, child) {
-            return Opacity(
-              opacity: _fadeOutAnimation.value == 1
-                  ? _fadeInAnimation.value
-                  : _fadeOutAnimation.value,
-              child: _showingContacts ? _buildContacts() : _buildTitle(),
-            );
-          },
+          builder: (context, child) => _buildAnimatedContent(),
         ),
       ),
+    );
+  }
+
+  Widget _buildAnimatedContent() {
+    return Opacity(
+      opacity: _fadeOutAnimation.value == 1
+          ? _fadeInAnimation.value
+          : _fadeOutAnimation.value,
+      child: _showingContacts ? _buildContacts() : _buildTitle(),
     );
   }
 
@@ -101,88 +107,109 @@ class SplashScreenState extends State<SplashScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          SplashConfig.logoPath,
-          height: SplashConfig.logoHeight,
-          fit: BoxFit.contain,
-        ),
+        _buildLogo(),
         const SizedBox(height: 20),
-        if (MediaQuery.of(context).size.height > 400)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: SplashConfig.socialLinks
-                        .map((link) => _buildSocialLink(link.icon, link.text))
-                        .toList(),
-                  ),
-                ),
-                const SizedBox(width: 40),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Text(
-                            SplashConfig.uiCredit,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Text(
-                            ' ${SplashConfig.uiCreditName}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: Image.asset(
-                          SplashConfig.uiCreditImagePath,
-                          width: 200,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+        if (_isLargeScreen()) _buildContactDetails(),
       ],
     );
   }
 
-  Widget _buildSocialLink(IconData icon, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        FaIcon(
-          icon,
-          size: 24,
-          color: Colors.white,
+  Widget _buildLogo() {
+    return Image.asset(
+      SplashConfig.logoPath,
+      height: SplashConfig.logoHeight,
+      fit: BoxFit.contain,
+    );
+  }
+
+  bool _isLargeScreen() => MediaQuery.of(context).size.height > 600;
+
+  Widget _buildContactDetails() {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 800),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildSocialLinks()),
+            const SizedBox(width: 40),
+            Expanded(child: _buildUiCredit()),
+          ],
         ),
-        const SizedBox(width: 8),
+      ),
+    );
+  }
+
+  Widget _buildSocialLinks() {
+    return Column(
+      children: SplashConfig.socialLinks
+          .map((link) => _buildSocialLink(link.icon, link.text))
+          .toList(),
+    );
+  }
+
+  Widget _buildUiCredit() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildUiCreditText(),
+        const SizedBox(height: 10),
+        _buildUiCreditImage(),
+      ],
+    );
+  }
+
+  Widget _buildUiCreditText() {
+    return const Row(
+      children: [
         Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          SplashConfig.uiCredit,
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        Text(
+          ' ${SplashConfig.uiCreditName}',
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ],
+    );
+  }
+
+  Widget _buildUiCreditImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(2),
+      child: Image.asset(
+        SplashConfig.uiCreditImagePath,
+        width: 300,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  Widget _buildSocialLink(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          FaIcon(
+            icon,
+            size: 24,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
