@@ -6,7 +6,7 @@ class LayoutConfig {
   final double borderRadius;
 
   LayoutConfig({
-    this.headerHeight = 40,
+    this.headerHeight = 50,
     this.sidebarWidth = 60,
     this.sidebarHeight = 60,
     this.contentPadding = 10,

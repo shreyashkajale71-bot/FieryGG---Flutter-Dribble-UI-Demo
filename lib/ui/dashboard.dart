@@ -142,19 +142,49 @@ class Dashboard extends StatelessWidget {
       bottom: isLandscape ? 0 : config.sidebarHeight,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.backgroundWidget,
+          border: Border.all(color: AppColors.borderWidget, width: 1),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(config.borderRadius),
           ),
         ),
-        child: const Center(
-          child: Text(
-            'Nội dung chính',
-            style: TextStyle(
-              color: AppColors.unactive,
-              fontSize: 18,
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundWidget,
+                  border: const Border(
+                    right: BorderSide(color: AppColors.borderWidget, width: 1),
+                  ),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(config.borderRadius),
+                  ),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Content',
+                    style: TextStyle(
+                      color: AppColors.unactive,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            if (isLandscape)
+              const SizedBox(
+                width: 300,
+                child: Center(
+                  child: Text(
+                    'Online Chats',
+                    style: TextStyle(
+                      color: AppColors.unactive,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
