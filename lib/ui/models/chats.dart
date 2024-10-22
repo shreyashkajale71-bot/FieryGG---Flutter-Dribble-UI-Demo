@@ -153,11 +153,48 @@ class ChatItem extends StatelessWidget {
               fontSize: 13),
         ),
         const SizedBox(width: 4),
+        if (rank != null) ...[
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                color: _getRankColor().withOpacity(0.9),
+                border: Border.all(color: _getRankColor(), width: 1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Text(
+                  rank![0].toUpperCase(),
+                  style: const TextStyle(
+                    color: AppColors.active,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+        ],
         Text(
           time,
           style: TextStyle(color: Colors.grey[600], fontSize: 10),
         ),
       ],
     );
+  }
+
+  Color _getRankColor() {
+    switch (rank?.toLowerCase()) {
+      case 'gold':
+        return Colors.amber;
+      case 'silver':
+        return Colors.blue;
+      case 'bronze':
+        return Colors.brown;
+      default:
+        return AppColors.container;
+    }
   }
 }
