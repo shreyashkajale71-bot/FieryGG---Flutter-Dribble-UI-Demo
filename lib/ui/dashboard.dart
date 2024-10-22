@@ -2,6 +2,8 @@ import 'package:fiery_gg/ui/widgets/demo_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
 import 'package:fiery_gg/ui/resources/config.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Dashboard extends StatefulWidget {
   final LayoutConfig config;
@@ -35,19 +37,19 @@ class _DashboardState extends State<Dashboard>
         content: const DemoTab(text: 'Roulette')),
     TabItem(
         title: 'Slots',
-        icon: Icons.bar_chart,
+        icon: Icons.casino,
         content: const DemoTab(text: 'Slots')),
     TabItem(
         title: 'Coinflip',
-        icon: Icons.diamond,
+        icon: Icons.monetization_on,
         content: const DemoTab(text: 'Coinflip')),
     TabItem(
         title: 'Cases',
-        icon: Icons.rocket_launch,
+        icon: Icons.diamond,
         content: const DemoTab(text: 'Cases')),
     TabItem(
         title: 'Crash',
-        icon: Icons.casino,
+        icon: Icons.rocket_launch,
         content: const DemoTab(text: 'Crash')),
   ];
 
@@ -125,14 +127,21 @@ class _DashboardState extends State<Dashboard>
       child: Container(
         color: AppColors.backgroundMain,
         child: isLandscape
-            ? SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: _sidebarItems(isLandscape),
+            ? Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: _sidebarItems(isLandscape),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  _buildSocialIcons(),
+                ],
               )
             : LayoutBuilder(
                 builder: (context, constraints) {
@@ -177,7 +186,9 @@ class _DashboardState extends State<Dashboard>
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: isLandscape ? 10 : 0),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
           width: 40,
           height: 40,
           decoration: BoxDecoration(
@@ -189,8 +200,8 @@ class _DashboardState extends State<Dashboard>
             children: [
               Icon(
                 icon,
-                size: 18,
                 color: isActive ? Colors.white : AppColors.unactive,
+                size: isActive ? 20 : 18,
               ),
               const SizedBox(height: 4),
               if (!isActive)
@@ -263,6 +274,46 @@ class _DashboardState extends State<Dashboard>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSocialIcons() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildSocialIcon(FontAwesomeIcons.telegram, () async {
+            final Uri url = Uri.parse('https://t.me/0898019210');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            }
+          }),
+          _buildSocialIcon(FontAwesomeIcons.github, () async {
+            final Uri url = Uri.parse('https://github.com/TilarnaExdilika');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            }
+          }),
+          _buildSocialIcon(FontAwesomeIcons.facebook, () async {
+            final Uri url = Uri.parse('https://www.facebook.com/IShino.Avery/');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            }
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialIcon(IconData icon, VoidCallback onPressed) {
+    return IconButton(
+      icon: Icon(
+        icon,
+        color: AppColors.unactive,
+        size: 18,
+      ),
+      onPressed: onPressed,
     );
   }
 }
