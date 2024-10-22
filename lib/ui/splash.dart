@@ -88,7 +88,7 @@ class SplashScreenState extends State<SplashScreen>
 
   Widget _buildTitle() {
     return const Text(
-      'by Tilarna',
+      SplashConfig.title,
       style: TextStyle(
         color: Colors.white,
         fontSize: 24,
@@ -102,69 +102,64 @@ class SplashScreenState extends State<SplashScreen>
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
-          'assets/images/logo.gif',
-          height: 300,
+          SplashConfig.logoPath,
+          height: SplashConfig.logoHeight,
           fit: BoxFit.contain,
         ),
         const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    _buildSocialLink(
-                        FontAwesomeIcons.github, 'TilarnaExdilika'),
-                    const SizedBox(height: 10),
-                    _buildSocialLink(FontAwesomeIcons.discord, '_tilarna'),
-                    const SizedBox(height: 10),
-                    _buildSocialLink(
-                        FontAwesomeIcons.facebookMessenger, 'IShino.Avery'),
-                  ],
+        if (MediaQuery.of(context).size.height > 400)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: SplashConfig.socialLinks
+                        .map((link) => _buildSocialLink(link.icon, link.text))
+                        .toList(),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 40),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      children: [
-                        Text(
-                          'UI by',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
+                const SizedBox(width: 40),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            SplashConfig.uiCredit,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                        Text(
-                          ' Sok Studio',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            ' ${SplashConfig.uiCreditName}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Image.asset(
-                        'assets/images/dribble_author.png',
-                        width: 200,
-                        fit: BoxFit.cover,
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Image.asset(
+                          SplashConfig.uiCreditImagePath,
+                          width: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
       ],
     );
   }

@@ -257,7 +257,7 @@ class _DashboardState extends State<Dashboard>
                 ),
               ),
             ),
-            if (isLandscape)
+            if (isLandscape && MediaQuery.of(context).size.width > 700)
               const SizedBox(
                 width: 300,
                 child: Center(
