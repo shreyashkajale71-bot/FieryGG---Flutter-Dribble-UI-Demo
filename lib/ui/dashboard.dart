@@ -1,6 +1,7 @@
 import 'package:fiery_gg/ui/models/tabs.dart';
 import 'package:fiery_gg/ui/widgets/demo_tab.dart';
 import 'package:fiery_gg/ui/widgets/game_tab.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
 import 'package:fiery_gg/ui/resources/config.dart';
@@ -52,6 +53,9 @@ class _DashboardState extends State<Dashboard>
         content: const DemoTab(text: 'Crash')),
   ];
 
+  final ScrollController _horizontalScrollController = ScrollController();
+  Offset _startPosition = Offset.zero;
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +70,7 @@ class _DashboardState extends State<Dashboard>
   @override
   void dispose() {
     _controller.dispose();
+    _horizontalScrollController.dispose();
     super.dispose();
   }
 
@@ -146,13 +151,32 @@ class _DashboardState extends State<Dashboard>
             : LayoutBuilder(
                 builder: (context, constraints) {
                   final itemWidth = constraints.maxWidth / 5;
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: itemWidth * _sidebarItems(isLandscape).length,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: _sidebarItems(isLandscape),
+                  return MouseRegion(
+                    onEnter: (_) => _startPosition = Offset.zero,
+                    child: Listener(
+                      onPointerDown: (event) => _startPosition = event.position,
+                      onPointerMove: (event) {
+                        if (event.kind == PointerDeviceKind.mouse &&
+                            event.buttons == kPrimaryButton) {
+                          final delta = _startPosition - event.position;
+                          _horizontalScrollController.position.moveTo(
+                            _horizontalScrollController.offset + delta.dx,
+                            curve: Curves.linear,
+                            duration: Duration.zero,
+                          );
+                          _startPosition = event.position;
+                        }
+                      },
+                      child: SingleChildScrollView(
+                        controller: _horizontalScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: itemWidth * _sidebarItems(isLandscape).length,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: _sidebarItems(isLandscape),
+                          ),
+                        ),
                       ),
                     ),
                   );

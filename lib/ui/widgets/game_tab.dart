@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
-class GameTab extends StatelessWidget {
+class GameTab extends StatefulWidget {
   const GameTab({super.key});
+
+  @override
+  State<GameTab> createState() => _GameTabState();
+}
+
+class _GameTabState extends State<GameTab> {
+  final ScrollController _scrollController = ScrollController();
+  Offset _startPosition = Offset.zero;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +36,36 @@ class GameTab extends StatelessWidget {
     final gameCards = _buildGameCards(isScrollable: isScrollable);
 
     if (isScrollable) {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Column(
-          children: [
-            Row(children: gameCards),
-          ],
-        ),
+      return Column(
+        children: [
+          SizedBox(
+            height: 250,
+            child: MouseRegion(
+              onEnter: (_) => _startPosition = Offset.zero,
+              child: Listener(
+                onPointerDown: (event) => _startPosition = event.position,
+                onPointerMove: (event) {
+                  if (event.kind == PointerDeviceKind.mouse &&
+                      event.buttons == kPrimaryButton) {
+                    final delta = _startPosition - event.position;
+                    _scrollController.position.moveTo(
+                      _scrollController.offset + delta.dx,
+                      curve: Curves.linear,
+                      duration: Duration.zero,
+                    );
+                    _startPosition = event.position;
+                  }
+                },
+                child: ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: gameCards.length,
+                  itemBuilder: (context, index) => gameCards[index],
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
