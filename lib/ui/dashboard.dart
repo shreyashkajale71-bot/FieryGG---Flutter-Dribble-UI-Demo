@@ -1,3 +1,4 @@
+import 'package:fiery_gg/ui/models/tabs.dart';
 import 'package:fiery_gg/ui/widgets/demo_tab.dart';
 import 'package:fiery_gg/ui/widgets/game_tab.dart';
 import 'package:flutter/material.dart';
@@ -315,12 +316,4 @@ class _DashboardState extends State<Dashboard>
       onPressed: onPressed,
     );
   }
-}
-
-class TabItem {
-  final String title;
-  final IconData icon;
-  final Widget content;
-
-  TabItem({required this.title, required this.icon, required this.content});
 }
