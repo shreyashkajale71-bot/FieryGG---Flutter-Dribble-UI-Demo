@@ -14,12 +14,14 @@ class GameTab extends StatefulWidget {
 class _GameTabState extends State<GameTab> {
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _matchesScrollController = ScrollController();
   Offset _startPosition = Offset.zero;
 
   @override
   void dispose() {
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
+    _matchesScrollController.dispose();
     super.dispose();
   }
 
@@ -57,7 +59,6 @@ class _GameTabState extends State<GameTab> {
                 ),
         ),
         const SizedBox(height: 10),
-        //build top matches
         _buildTopMatches(),
       ],
     );
@@ -85,11 +86,63 @@ class _GameTabState extends State<GameTab> {
                     color: AppColors.active),
               ),
               const Spacer(),
-              TextButton(
-                onPressed: () {
-                  // Xử lý khi nhấn "See All"
-                },
-                child: const Text('See All'),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  height: 30,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.container.withOpacity(0.9),
+                    border: Border.all(color: AppColors.container, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'See All',
+                      style: TextStyle(color: AppColors.active, fontSize: 12),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: AppColors.container.withOpacity(0.9),
+                    border: Border.all(color: AppColors.container, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_left,
+                      color: AppColors.active,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.9),
+                    border: Border.all(color: AppColors.primary, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_right,
+                      color: AppColors.active,
+                      size: 18,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -111,8 +164,8 @@ class _GameTabState extends State<GameTab> {
           if (event.kind == PointerDeviceKind.mouse &&
               event.buttons == kPrimaryButton) {
             final delta = _startPosition - event.position;
-            _horizontalScrollController.position.moveTo(
-              _horizontalScrollController.offset + delta.dx,
+            _matchesScrollController.position.moveTo(
+              _matchesScrollController.offset + delta.dx,
               curve: Curves.linear,
               duration: Duration.zero,
             );
@@ -120,7 +173,7 @@ class _GameTabState extends State<GameTab> {
           }
         },
         child: ListView.builder(
-          controller: _horizontalScrollController,
+          controller: _matchesScrollController,
           scrollDirection: Axis.horizontal,
           itemCount: topMatches.length,
           itemBuilder: (context, index) => _buildMatchCard(topMatches[index]),
