@@ -1,6 +1,6 @@
+import 'package:fiery_gg/ui/models/chats.dart';
 import 'package:fiery_gg/ui/models/tabs.dart';
-import 'package:fiery_gg/ui/widgets/demo_tab.dart';
-import 'package:fiery_gg/ui/widgets/game_tab.dart';
+import 'package:fiery_gg/ui/widgets/online_chats.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
@@ -25,33 +25,8 @@ class _DashboardState extends State<Dashboard>
   int _selectedTab = 0;
   late AnimationController _controller;
   late Animation<double> _animation;
-  final List<TabItem> _tabItems = [
-    TabItem(title: 'Game', icon: Icons.dashboard, content: const GameTab()),
-    TabItem(
-        title: 'Jackpot',
-        icon: Icons.settings_suggest,
-        content: const DemoTab(text: 'Jackpot')),
-    TabItem(
-        title: 'Roulette',
-        icon: Icons.person,
-        content: const DemoTab(text: 'Roulette')),
-    TabItem(
-        title: 'Slots',
-        icon: Icons.casino,
-        content: const DemoTab(text: 'Slots')),
-    TabItem(
-        title: 'Coinflip',
-        icon: Icons.monetization_on,
-        content: const DemoTab(text: 'Coinflip')),
-    TabItem(
-        title: 'Cases',
-        icon: Icons.diamond,
-        content: const DemoTab(text: 'Cases')),
-    TabItem(
-        title: 'Crash',
-        icon: Icons.rocket_launch,
-        content: const DemoTab(text: 'Crash')),
-  ];
+  final List<TabItem> _tabItems = tabItems;
+  final List<ChatItem> _chatItems = chatItems;
 
   final ScrollController _horizontalScrollController = ScrollController();
   Offset _startPosition = Offset.zero;
@@ -75,9 +50,7 @@ class _DashboardState extends State<Dashboard>
   }
 
   void _onTabSelected(int index) {
-    setState(() {
-      _selectedTab = index;
-    });
+    setState(() => _selectedTab = index);
     _controller.forward(from: 0);
   }
 
@@ -118,7 +91,6 @@ class _DashboardState extends State<Dashboard>
         color: AppColors.backgroundMain,
         child: Row(
           children: [
-            // Logo
             Padding(
               padding: const EdgeInsets.only(left: 5),
               child: Image.asset(
@@ -127,28 +99,79 @@ class _DashboardState extends State<Dashboard>
               ),
             ),
             const SizedBox(width: 16),
-            // Các nút điều hướng
-            _buildNavButton('Home', icon: FontAwesomeIcons.house),
-            _buildNavButton('Leaderboard',
-                isActive: true, icon: FontAwesomeIcons.trophy),
-            _buildNavButton('Clan', icon: FontAwesomeIcons.shield),
+            if (MediaQuery.of(context).size.width > 800)
+              _buildNavButton('Home', icon: FontAwesomeIcons.house),
+            if (MediaQuery.of(context).size.width > 800)
+              _buildNavButton('Leaderboard',
+                  isActive: true, icon: FontAwesomeIcons.trophy),
+            if (MediaQuery.of(context).size.width > 800)
+              _buildNavButton('Clan', icon: FontAwesomeIcons.shield),
             const Spacer(),
-            // Nút Games
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
+            if (MediaQuery.of(context).size.width > 1000)
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundWidget.withOpacity(0.9),
+                  border: Border.all(color: AppColors.container, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.9),
+                        border: Border.all(color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.gamepad,
+                            color: AppColors.active,
+                            size: 14,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Games',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.star,
+                            color: AppColors.unactive,
+                            size: 14,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Matches',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: const Text('Games'),
-            ),
             const Spacer(),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.backgroundWidget.withOpacity(0.8),
+                color: AppColors.backgroundWidget.withOpacity(0.9),
                 border: Border.all(color: AppColors.container, width: 1),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -180,7 +203,7 @@ class _DashboardState extends State<Dashboard>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.green2.withOpacity(0.8),
+                      color: AppColors.green2.withOpacity(0.9),
                       border: Border.all(color: AppColors.green2),
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -195,9 +218,7 @@ class _DashboardState extends State<Dashboard>
                 ],
               ),
             ),
-
             const SizedBox(width: 7),
-            // Avatar
             CircleAvatar(
               radius: 16,
               backgroundColor: Colors.transparent,
@@ -218,10 +239,10 @@ class _DashboardState extends State<Dashboard>
             GestureDetector(
               onTap: () {},
               child: Container(
-                width: 35,
-                height: 35,
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundWidget.withOpacity(0.8),
+                  color: AppColors.backgroundWidget.withOpacity(0.9),
                   border: Border.all(color: AppColors.container, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -254,10 +275,10 @@ class _DashboardState extends State<Dashboard>
             GestureDetector(
               onTap: () {},
               child: Container(
-                width: 35,
-                height: 35,
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundWidget.withOpacity(0.8),
+                  color: AppColors.backgroundWidget.withOpacity(0.9),
                   border: Border.all(color: AppColors.container, width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -270,7 +291,7 @@ class _DashboardState extends State<Dashboard>
                 ),
               ),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 15),
           ],
         ),
       ),
@@ -309,65 +330,72 @@ class _DashboardState extends State<Dashboard>
       right: isLandscape ? null : 0,
       child: Container(
         color: AppColors.backgroundMain,
-        child: isLandscape
-            ? Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: _sidebarItems(isLandscape),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (MediaQuery.of(context).size.height > 300)
-                    _buildSocialIcons(),
-                ],
-              )
-            : LayoutBuilder(
-                builder: (context, constraints) {
-                  final itemWidth = constraints.maxWidth / 5;
-                  return MouseRegion(
-                    onEnter: (_) => _startPosition = Offset.zero,
-                    child: Listener(
-                      onPointerDown: (event) => _startPosition = event.position,
-                      onPointerMove: (event) {
-                        if (event.kind == PointerDeviceKind.mouse &&
-                            event.buttons == kPrimaryButton) {
-                          final delta = _startPosition - event.position;
-                          _horizontalScrollController.position.moveTo(
-                            _horizontalScrollController.offset + delta.dx,
-                            curve: Curves.linear,
-                            duration: Duration.zero,
-                          );
-                          _startPosition = event.position;
-                        }
-                      },
-                      child: SingleChildScrollView(
-                        controller: _horizontalScrollController,
-                        scrollDirection: Axis.horizontal,
-                        child: SizedBox(
-                          width: itemWidth * _sidebarItems(isLandscape).length,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: _sidebarItems(isLandscape),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+        child:
+            isLandscape ? _buildVerticalSidebar() : _buildHorizontalSidebar(),
       ),
     );
   }
 
+  Widget _buildVerticalSidebar() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: _sidebarItems(true),
+              ),
+            ),
+          ),
+        ),
+        if (MediaQuery.of(context).size.height > 300) _buildSocialIcons(),
+      ],
+    );
+  }
+
+  Widget _buildHorizontalSidebar() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final itemWidth = constraints.maxWidth / 5;
+        return MouseRegion(
+          onEnter: (_) => _startPosition = Offset.zero,
+          child: Listener(
+            onPointerDown: (event) => _startPosition = event.position,
+            onPointerMove: (event) {
+              if (event.kind == PointerDeviceKind.mouse &&
+                  event.buttons == kPrimaryButton) {
+                final delta = _startPosition - event.position;
+                _horizontalScrollController.position.moveTo(
+                  _horizontalScrollController.offset + delta.dx,
+                  curve: Curves.linear,
+                  duration: Duration.zero,
+                );
+                _startPosition = event.position;
+              }
+            },
+            child: SingleChildScrollView(
+              controller: _horizontalScrollController,
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: itemWidth * _sidebarItems(false).length,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _sidebarItems(false),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   List<Widget> _sidebarItems(bool isLandscape) {
-    return List.generate(_tabItems.length, (index) {
-      final item = _tabItems[index];
+    return _tabItems.asMap().entries.map((entry) {
+      final index = entry.key;
+      final item = entry.value;
       return _buildSidebarItem(
         icon: item.icon,
         title: item.title,
@@ -375,7 +403,7 @@ class _DashboardState extends State<Dashboard>
         onTap: () => _onTabSelected(index),
         isLandscape: isLandscape,
       );
-    });
+    }).toList();
   }
 
   Widget _buildSidebarItem({
@@ -396,7 +424,7 @@ class _DashboardState extends State<Dashboard>
           height: 40,
           decoration: BoxDecoration(
             color: isActive
-                ? AppColors.primary.withOpacity(0.8)
+                ? AppColors.primary.withOpacity(0.9)
                 : Colors.transparent,
             border: isActive
                 ? Border.all(
@@ -470,18 +498,7 @@ class _DashboardState extends State<Dashboard>
               ),
             ),
             if (isLandscape && MediaQuery.of(context).size.width > 700)
-              const SizedBox(
-                width: 300,
-                child: Center(
-                  child: Text(
-                    'Online Chats',
-                    style: TextStyle(
-                      color: AppColors.unactive,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
+              SizedBox(width: 300, child: OnlineChats(chatItems: _chatItems)),
           ],
         ),
       ),
