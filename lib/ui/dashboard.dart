@@ -114,7 +114,186 @@ class _DashboardState extends State<Dashboard>
       top: 0,
       right: 0,
       height: widget.config.headerHeight,
-      child: Container(color: AppColors.backgroundMain),
+      child: Container(
+        color: AppColors.backgroundMain,
+        child: Row(
+          children: [
+            // Logo
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Image.asset(
+                'assets/images/logo.png',
+                height: 45,
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Các nút điều hướng
+            _buildNavButton('Home', icon: FontAwesomeIcons.house),
+            _buildNavButton('Leaderboard',
+                isActive: true, icon: FontAwesomeIcons.trophy),
+            _buildNavButton('Clan', icon: FontAwesomeIcons.shield),
+            const Spacer(),
+            // Nút Games
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text('Games'),
+            ),
+            const Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.backgroundWidget.withOpacity(0.8),
+                border: Border.all(color: AppColors.container, width: 1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.coins,
+                          color: Colors.amber,
+                          size: 14,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          '1,561',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: AppColors.green2.withOpacity(0.8),
+                      border: Border.all(color: AppColors.green2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      '+ Deposit',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 7),
+            // Avatar
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primary,
+                    width: 2,
+                  ),
+                ),
+                child: ClipOval(
+                  child: Image.asset('assets/images/avt.png'),
+                ),
+              ),
+            ),
+            const SizedBox(width: 7),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundWidget.withOpacity(0.8),
+                  border: Border.all(color: AppColors.container, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Stack(
+                    children: [
+                      const Icon(
+                        Icons.notifications,
+                        color: AppColors.active,
+                        size: 18,
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 7,
+                          height: 7,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 7),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundWidget.withOpacity(0.8),
+                  border: Border.all(color: AppColors.container, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Center(
+                  child: Icon(
+                    FontAwesomeIcons.powerOff,
+                    color: AppColors.unactive,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String text, {bool isActive = false, IconData? icon}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, right: 2, left: 2),
+      child: TextButton.icon(
+        onPressed: () {},
+        style: TextButton.styleFrom(
+          foregroundColor: isActive ? AppColors.primary : AppColors.unactive,
+        ),
+        icon: Icon(icon, size: 15),
+        label: Text(
+          text,
+          style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isActive ? AppColors.active : AppColors.unactive),
+        ),
+      ),
     );
   }
 
@@ -216,7 +395,15 @@ class _DashboardState extends State<Dashboard>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: isActive ? AppColors.primary : Colors.transparent,
+            color: isActive
+                ? AppColors.primary.withOpacity(0.8)
+                : Colors.transparent,
+            border: isActive
+                ? Border.all(
+                    color: AppColors.primary,
+                    width: 2,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(

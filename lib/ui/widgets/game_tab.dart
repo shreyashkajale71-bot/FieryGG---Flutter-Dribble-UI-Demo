@@ -23,7 +23,7 @@ class _GameTabState extends State<GameTab> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -138,7 +138,7 @@ class _GameTabState extends State<GameTab> {
       AlignmentGeometry end = Alignment.bottomRight,
       double? width}) {
     return Container(
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.all(6),
       width: width,
       height: 250,
       decoration: BoxDecoration(
@@ -147,7 +147,7 @@ class _GameTabState extends State<GameTab> {
           end: end,
           colors: gradientColors,
         ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
