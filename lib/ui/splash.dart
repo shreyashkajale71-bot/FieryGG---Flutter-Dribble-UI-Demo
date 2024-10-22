@@ -122,7 +122,7 @@ class SplashScreenState extends State<SplashScreen>
     );
   }
 
-  bool _isLargeScreen() => MediaQuery.of(context).size.height > 600;
+  bool _isLargeScreen() => MediaQuery.of(context).size.height > 700;
 
   Widget _buildContactDetails() {
     return Container(

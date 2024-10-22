@@ -9,12 +9,14 @@ class GameTab extends StatefulWidget {
 }
 
 class _GameTabState extends State<GameTab> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
   Offset _startPosition = Offset.zero;
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _horizontalScrollController.dispose();
+    _verticalScrollController.dispose();
     super.dispose();
   }
 
@@ -24,9 +26,15 @@ class _GameTabState extends State<GameTab> {
       padding: const EdgeInsets.all(10),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return constraints.maxWidth < 650
-              ? _buildLayout(isScrollable: true)
-              : _buildLayout(isScrollable: false);
+          return SingleChildScrollView(
+            controller: _verticalScrollController,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: constraints.maxWidth < 650
+                  ? _buildLayout(isScrollable: true)
+                  : _buildLayout(isScrollable: false),
+            ),
+          );
         },
       ),
     );
@@ -48,8 +56,8 @@ class _GameTabState extends State<GameTab> {
                   if (event.kind == PointerDeviceKind.mouse &&
                       event.buttons == kPrimaryButton) {
                     final delta = _startPosition - event.position;
-                    _scrollController.position.moveTo(
-                      _scrollController.offset + delta.dx,
+                    _horizontalScrollController.position.moveTo(
+                      _horizontalScrollController.offset + delta.dx,
                       curve: Curves.linear,
                       duration: Duration.zero,
                     );
@@ -57,7 +65,7 @@ class _GameTabState extends State<GameTab> {
                   }
                 },
                 child: ListView.builder(
-                  controller: _scrollController,
+                  controller: _horizontalScrollController,
                   scrollDirection: Axis.horizontal,
                   itemCount: gameCards.length,
                   itemBuilder: (context, index) => gameCards[index],
