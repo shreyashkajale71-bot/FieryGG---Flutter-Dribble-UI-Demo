@@ -1,4 +1,5 @@
 import 'package:fiery_gg/ui/widgets/demo_tab.dart';
+import 'package:fiery_gg/ui/widgets/game_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
 import 'package:fiery_gg/ui/resources/config.dart';
@@ -23,10 +24,7 @@ class _DashboardState extends State<Dashboard>
   late AnimationController _controller;
   late Animation<double> _animation;
   final List<TabItem> _tabItems = [
-    TabItem(
-        title: 'Game',
-        icon: Icons.dashboard,
-        content: const DemoTab(text: 'Game')),
+    TabItem(title: 'Game', icon: Icons.dashboard, content: const GameTab()),
     TabItem(
         title: 'Jackpot',
         icon: Icons.settings_suggest,
@@ -140,7 +138,8 @@ class _DashboardState extends State<Dashboard>
                       ),
                     ),
                   ),
-                  _buildSocialIcons(),
+                  if (MediaQuery.of(context).size.height > 300)
+                    _buildSocialIcons(),
                 ],
               )
             : LayoutBuilder(

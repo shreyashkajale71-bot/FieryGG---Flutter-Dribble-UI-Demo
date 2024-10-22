@@ -1,7 +1,8 @@
 import 'package:fiery_gg/ui/dashboard.dart';
+import 'package:fiery_gg/ui/resources/colors.dart';
 import 'package:fiery_gg/ui/resources/config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,7 +23,7 @@ class SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(milliseconds: 3500),
     );
     _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -68,7 +69,7 @@ class SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundMain,
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -89,7 +90,7 @@ class SplashScreenState extends State<SplashScreen>
     return const Text(
       'by Tilarna',
       style: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 24,
         fontWeight: FontWeight.bold,
       ),
@@ -100,30 +101,88 @@ class SplashScreenState extends State<SplashScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildSocialLink(
-            'assets/images/github.svg', 'github.com/TilarnaExdilika'),
-        const SizedBox(height: 10),
-        _buildSocialLink('assets/images/discord.svg', '_tilarna'),
-        const SizedBox(height: 10),
-        _buildSocialLink('assets/images/messenger.svg', 'IShino.Avery'),
+        Image.asset(
+          'assets/images/logo.gif',
+          height: 300,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    _buildSocialLink(
+                        FontAwesomeIcons.github, 'TilarnaExdilika'),
+                    const SizedBox(height: 10),
+                    _buildSocialLink(FontAwesomeIcons.discord, '_tilarna'),
+                    const SizedBox(height: 10),
+                    _buildSocialLink(
+                        FontAwesomeIcons.facebookMessenger, 'IShino.Avery'),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 40),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Text(
+                          'UI by',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text(
+                          ' Sok Studio',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: Image.asset(
+                        'assets/images/dribble_author.png',
+                        width: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildSocialLink(String iconPath, String text) {
+  Widget _buildSocialLink(IconData icon, String text) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SvgPicture.asset(
-          iconPath,
-          width: 24,
-          height: 24,
+        FaIcon(
+          icon,
+          size: 24,
+          color: Colors.white,
         ),
         const SizedBox(width: 8),
         Text(
           text,
           style: const TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
