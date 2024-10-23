@@ -1,16 +1,82 @@
-# fiery_gg
+# FieryGG - Flutter Dribble UI Demo
 
-A new Flutter project.
+![FieryGG](assets/images/logo.gif)
 
-## Getting Started
+FieryGG is a UI demo project built with Flutter, inspired by a design on Dribbble. This project showcases the ability to create beautiful and responsive user interfaces using Flutter.
 
-This project is a starting point for a Flutter application.
+## UI by SokStudio  
 
-A few resources to get you started if this is your first Flutter project:
+![UI by SokStudio](assets/images/dribble_author.png)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Screenshots
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Desktop](assets/images/screenshot_1.png)
+
+![Mobile](assets/images/screenshot_2.png)
+
+## Installation
+
+1. Make sure you have the Flutter SDK installed on your computer.
+2. Clone this repository:
+
+   ```bash
+   git clone https://github.com/your-username/fiery_gg.git
+   ```
+
+3. Navigate to the project directory:
+
+   ```bash
+   cd fiery_gg
+   ```
+
+4. Install dependencies:
+
+   ```bash
+   flutter pub get
+   ```
+
+5. Run the app:
+
+   ```bash
+   flutter run
+   ```
+
+## Project Structure
+
+The project is organized as follows:
+
+```bash
+fiery_gg/
+├── lib/
+│   ├── ui/
+│   │   ├── dashboard.dart
+│   │   └── splash.dart
+│   ├── config/
+│   ├── models/
+│   └── main.dart
+├── assets/
+│   ├── images/
+│   └── fonts/
+└── pubspec.yaml
+```
+
+## Dependencies
+
+The project uses the following packages:
+
+- flutter
+- cupertino_icons
+- font_awesome_flutter
+- url_launcher
+
+## Contact
+
+If you have any questions or suggestions, please feel free to reach out:
+
+![GitHub](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/GitHub_Invertocat_Logo.svg/330px-GitHub_Invertocat_Logo.svg.png) [GitHub](https://github.com/TilarnaExdilika)
+
+![Facebook](https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Facebook_f_logo_%282021%29.svg/768px-Facebook_f_logo_%282021%29.svg.png?20210818083032) [Facebook](https://www.facebook.com/IShino.Avery/)
+
+---
+
+Thank you for your interest in the  project!
