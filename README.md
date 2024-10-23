@@ -16,7 +16,7 @@ FieryGG is a UI demo project built with Flutter, inspired by a design on Dribbbl
 
 ## Live Demo
 
-You can view the live demo of the project here: [Live Demo](https://github.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/deployments/github-pages)
+You can view the live demo of the project here: [Live Demo](https://tilarnaexdilika.github.io/FieryGG---Flutter-Dribble-UI-Demo/)
 
 ## Installation
 
