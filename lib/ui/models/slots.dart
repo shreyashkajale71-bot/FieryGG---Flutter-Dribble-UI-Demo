@@ -8,20 +8,41 @@ class Slot {
 final List<Slot> topSlots = [
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
   Slot(
       imageUrl:
-          'https://i.pinimg.com/564x/73/47/31/734731e8f200e33653514419db0f7372.jpg'),
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
+  Slot(
+      imageUrl:
+          'https://raw.githubusercontent.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo/refs/heads/main/assets/images/462200842_17922814748969194_838446809126183917_n.png'),
 ];

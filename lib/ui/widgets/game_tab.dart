@@ -13,18 +13,19 @@ class GameTab extends StatefulWidget {
 }
 
 class _GameTabState extends State<GameTab> {
-  final ScrollController _horizontalScrollController = ScrollController();
-  final ScrollController _verticalScrollController = ScrollController();
-  final ScrollController _matchesScrollController = ScrollController();
-  final ScrollController _slotsScrollController = ScrollController();
+  final Map<String, ScrollController> _scrollControllers = {
+    'horizontal': ScrollController(),
+    'vertical': ScrollController(),
+    'matches': ScrollController(),
+    'slots': ScrollController(),
+  };
   Offset _startPosition = Offset.zero;
 
   @override
   void dispose() {
-    _horizontalScrollController.dispose();
-    _verticalScrollController.dispose();
-    _matchesScrollController.dispose();
-    _slotsScrollController.dispose();
+    for (var controller in _scrollControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -34,7 +35,7 @@ class _GameTabState extends State<GameTab> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
-          controller: _verticalScrollController,
+          controller: _scrollControllers['vertical'],
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: _buildLayout(isScrollable: constraints.maxWidth < 650),
@@ -62,14 +63,26 @@ class _GameTabState extends State<GameTab> {
                 ),
         ),
         const SizedBox(height: 10),
-        _buildTopMatches(),
+        _buildTopSection(
+          title: 'Top Matches',
+          icon: FontAwesomeIcons.gamepad,
+          content: _buildMatchesList(),
+        ),
         const SizedBox(height: 20),
-        _buildTopSlots(),
+        _buildTopSection(
+          title: 'Top Slots',
+          icon: FontAwesomeIcons.dice,
+          content: _buildSlotsList(),
+        ),
       ],
     );
   }
 
-  Widget _buildTopMatches() {
+  Widget _buildTopSection({
+    required String title,
+    required IconData icon,
+    required Widget content,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,90 +90,69 @@ class _GameTabState extends State<GameTab> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
           child: Row(
             children: [
-              const Icon(
-                FontAwesomeIcons.gamepad,
-                color: AppColors.unactive,
-                size: 16,
-              ),
+              Icon(icon, color: AppColors.unactive, size: 16),
               const SizedBox(width: 12),
-              const Text(
-                'Top Matches',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.active),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.active,
+                ),
               ),
               const Spacer(),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: 30,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    color: AppColors.container.withOpacity(0.9),
-                    border: Border.all(color: AppColors.container, width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'See All',
-                      style: TextStyle(color: AppColors.active, fontSize: 12),
-                    ),
-                  ),
-                ),
+              _buildButton('See All', width: 80),
+              const SizedBox(width: 10),
+              _buildButton(
+                '',
+                width: 30,
+                icon: Icons.arrow_left,
+                color: AppColors.container,
               ),
               const SizedBox(width: 10),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: AppColors.container.withOpacity(0.9),
-                    border: Border.all(color: AppColors.container, width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_left,
-                      color: AppColors.active,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.9),
-                    border: Border.all(color: AppColors.primary, width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_right,
-                      color: AppColors.active,
-                      size: 18,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                '',
+                width: 30,
+                icon: Icons.arrow_right,
+                color: AppColors.primary,
               ),
             ],
           ),
         ),
-        SizedBox(
-          height: 180,
-          child: _buildMatchesList(),
-        ),
+        SizedBox(height: 180, child: content),
       ],
     );
   }
 
-  Widget _buildMatchesList() {
+  Widget _buildButton(String text,
+      {double width = 80, IconData? icon, Color color = AppColors.container}) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        height: 30,
+        width: width,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.9),
+          border: Border.all(color: color, width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: icon != null
+              ? Icon(icon, color: AppColors.active, size: 18)
+              : Text(
+                  text,
+                  style: const TextStyle(color: AppColors.active, fontSize: 12),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScrollableList({
+    required ScrollController controller,
+    required int itemCount,
+    required Widget Function(BuildContext, int) itemBuilder,
+  }) {
     return MouseRegion(
       onEnter: (_) => _startPosition = Offset.zero,
       child: Listener(
@@ -169,8 +161,8 @@ class _GameTabState extends State<GameTab> {
           if (event.kind == PointerDeviceKind.mouse &&
               event.buttons == kPrimaryButton) {
             final delta = _startPosition - event.position;
-            _matchesScrollController.position.moveTo(
-              _matchesScrollController.offset + delta.dx,
+            controller.position.moveTo(
+              controller.offset + delta.dx,
               curve: Curves.linear,
               duration: Duration.zero,
             );
@@ -178,12 +170,28 @@ class _GameTabState extends State<GameTab> {
           }
         },
         child: ListView.builder(
-          controller: _matchesScrollController,
+          controller: controller,
           scrollDirection: Axis.horizontal,
-          itemCount: topMatches.length,
-          itemBuilder: (context, index) => _buildMatchCard(topMatches[index]),
+          itemCount: itemCount,
+          itemBuilder: itemBuilder,
         ),
       ),
+    );
+  }
+
+  Widget _buildMatchesList() {
+    return _buildScrollableList(
+      controller: _scrollControllers['matches']!,
+      itemCount: topMatches.length,
+      itemBuilder: (context, index) => _buildMatchCard(topMatches[index]),
+    );
+  }
+
+  Widget _buildSlotsList() {
+    return _buildScrollableList(
+      controller: _scrollControllers['slots']!,
+      itemCount: topSlots.length,
+      itemBuilder: (context, index) => _buildSlotCard(topSlots[index]),
     );
   }
 
@@ -353,30 +361,96 @@ class _GameTabState extends State<GameTab> {
     );
   }
 
-  Widget _buildCardLayout(List<Widget> gameCards) {
-    return MouseRegion(
-      onEnter: (_) => _startPosition = Offset.zero,
-      child: Listener(
-        onPointerDown: (event) => _startPosition = event.position,
-        onPointerMove: (event) {
-          if (event.kind == PointerDeviceKind.mouse &&
-              event.buttons == kPrimaryButton) {
-            final delta = _startPosition - event.position;
-            _horizontalScrollController.position.moveTo(
-              _horizontalScrollController.offset + delta.dx,
-              curve: Curves.linear,
-              duration: Duration.zero,
-            );
-            _startPosition = event.position;
-          }
-        },
-        child: ListView.builder(
-          controller: _horizontalScrollController,
-          scrollDirection: Axis.horizontal,
-          itemCount: gameCards.length,
-          itemBuilder: (context, index) => gameCards[index],
-        ),
+  Widget _buildSlotCard(Slot slot) {
+    return Container(
+      width: 150,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              slot.imageUrl,
+              fit: BoxFit.cover,
+              width: 150,
+              height: 180,
+            ),
+          ),
+          Positioned.fill(
+            child: MouseRegion(
+              child: _buildHoverOverlay(slot),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildHoverOverlay(Slot slot) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return MouseRegion(
+          onEnter: (_) => setState(() => slot.isHovered = true),
+          onExit: (_) => setState(() => slot.isHovered = false),
+          child: AnimatedOpacity(
+            opacity: slot.isHovered ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: AppColors.primary,
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 4),
+                      minimumSize: const Size(80, 30),
+                    ),
+                    child: const Text(
+                      'Demo',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCardLayout(List<Widget> gameCards) {
+    return _buildScrollableList(
+      controller: _scrollControllers['horizontal']!,
+      itemCount: gameCards.length,
+      itemBuilder: (context, index) => gameCards[index],
     );
   }
 
@@ -436,11 +510,8 @@ class _GameTabState extends State<GameTab> {
       width: width,
       height: 250,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: begin,
-          end: end,
-          colors: gradientColors,
-        ),
+        gradient:
+            LinearGradient(begin: begin, end: end, colors: gradientColors),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -464,181 +535,6 @@ class _GameTabState extends State<GameTab> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTopSlots() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-          child: Row(
-            children: [
-              const Icon(
-                FontAwesomeIcons.dice,
-                color: AppColors.unactive,
-                size: 16,
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Top Slots',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.active),
-              ),
-              const Spacer(),
-              _buildNavigationButtons(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 180,
-          child: _buildSlotsList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSlotsList() {
-    return MouseRegion(
-      onEnter: (_) => _startPosition = Offset.zero,
-      child: Listener(
-        onPointerDown: (event) => _startPosition = event.position,
-        onPointerMove: (event) {
-          if (event.kind == PointerDeviceKind.mouse &&
-              event.buttons == kPrimaryButton) {
-            final delta = _startPosition - event.position;
-            _matchesScrollController.position.moveTo(
-              _matchesScrollController.offset + delta.dx,
-              curve: Curves.linear,
-              duration: Duration.zero,
-            );
-            _startPosition = event.position;
-          }
-        },
-        child: ListView.builder(
-          controller: _matchesScrollController,
-          scrollDirection: Axis.horizontal,
-          itemCount: topSlots.length,
-          itemBuilder: (context, index) => _buildSlotCard(topSlots[index]),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSlotCard(Slot slot) {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              slot.imageUrl,
-              fit: BoxFit.cover,
-              width: 150,
-              height: 180,
-            ),
-          ),
-          Positioned.fill(
-            child: MouseRegion(
-              child: _buildHoverOverlay(slot),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHoverOverlay(Slot slot) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return MouseRegion(
-          onEnter: (_) => setState(() => slot.isHovered = true),
-          onExit: (_) => setState(() => slot.isHovered = false),
-          child: AnimatedOpacity(
-            opacity: slot.isHovered ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Play'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.play_circle_outline),
-                    label: const Text('Demo'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.container,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildNavigationButtons() {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: AppColors.container.withOpacity(0.9),
-              border: Border.all(color: AppColors.container, width: 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_left,
-                color: AppColors.active,
-                size: 18,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: AppColors.container.withOpacity(0.9),
-              border: Border.all(color: AppColors.container, width: 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_right,
-                color: AppColors.active,
-                size: 18,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
