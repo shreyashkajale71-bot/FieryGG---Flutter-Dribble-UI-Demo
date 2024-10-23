@@ -1,3 +1,4 @@
+import 'package:fiery_gg/ui/models/live_bet.dart';
 import 'package:fiery_gg/ui/models/match.dart';
 import 'package:fiery_gg/ui/models/slots.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
@@ -74,6 +75,8 @@ class _GameTabState extends State<GameTab> {
           icon: FontAwesomeIcons.dice,
           content: _buildSlotsList(),
         ),
+        const SizedBox(height: 20),
+        _buildLiveBet(),
       ],
     );
   }
@@ -546,4 +549,159 @@ class _GameTabState extends State<GameTab> {
     'Cases': [Color(0xFF0F766E), Color(0xFF14B8A6)],
     'Slots': [Color(0xFFEA580C), Color(0xFFFB923C)],
   };
+
+  Widget _buildLiveBet() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLiveBetTabs(),
+        const SizedBox(height: 10),
+        _buildLiveBetTable(),
+      ],
+    );
+  }
+
+  Widget _buildLiveBetTabs() {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildTabButton('Live Bet', isActive: true),
+          _buildTabButton('Lucky Wins'),
+          _buildTabButton('Whale wins'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String text, {bool isActive = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: isActive ? AppColors.container : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: isActive ? Colors.white : AppColors.unactive,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLiveBetTable() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          _buildTableHeader(),
+          ...liveBetData.map((bet) => _buildTableRow(
+                game: bet.game,
+                user: bet.user,
+                time: bet.time,
+                wager: bet.wager,
+                multiplier: bet.multiplier,
+                payout: bet.payout,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableHeader() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          _buildHeaderCell('Game', flex: 3),
+          _buildHeaderCell('User', flex: 2),
+          _buildHeaderCell('Time', flex: 2),
+          _buildHeaderCell('Wager', flex: 2),
+          _buildHeaderCell('Multiplier', flex: 1),
+          _buildHeaderCell('Payout',
+              flex: 4, alignRight: true), // Thêm alignRight: true ở đây
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderCell(String text,
+      {int flex = 1, bool alignRight = false}) {
+    return Expanded(
+      flex: flex,
+      child: Align(
+        alignment: alignRight ? Alignment.centerRight : Alignment.centerLeft,
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: AppColors.unactive,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableRow({
+    required String game,
+    required String user,
+    required String time,
+    required String wager,
+    required String multiplier,
+    required String payout,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          _buildTableCell(game, flex: 3, icon: Icons.casino),
+          _buildTableCell(user, flex: 2, isUser: true),
+          _buildTableCell(time, flex: 2),
+          _buildTableCell(wager, flex: 2, isCurrency: true),
+          _buildTableCell(multiplier, flex: 1, color: AppColors.primary),
+          _buildTableCell(payout, flex: 4, isCurrency: true, alignRight: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableCell(
+    String text, {
+    int flex = 1,
+    IconData? icon,
+    bool isUser = false,
+    bool isCurrency = false,
+    Color color = Colors.white,
+    bool alignRight = false,
+  }) {
+    return Expanded(
+      flex: flex,
+      child: Row(
+        mainAxisAlignment:
+            alignRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (icon != null) Icon(icon, color: AppColors.unactive, size: 16),
+          if (isUser)
+            const CircleAvatar(
+                radius: 12,
+                backgroundImage: AssetImage('assets/images/avt.png')),
+          if (icon != null || isUser) const SizedBox(width: 8),
+          Text(
+            isCurrency ? '\$$text' : text,
+            style: TextStyle(color: color, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
 }
