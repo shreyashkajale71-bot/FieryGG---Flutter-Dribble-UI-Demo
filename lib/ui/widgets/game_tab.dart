@@ -122,7 +122,7 @@ class _GameTabState extends State<GameTab> {
             ],
           ),
         ),
-        SizedBox(height: 180, child: content),
+        SizedBox(child: content),
       ],
     );
   }
@@ -311,6 +311,8 @@ class _GameTabState extends State<GameTab> {
             padding: const EdgeInsets.only(
               left: 12.0,
               right: 12.0,
+              top: 12.0,
+              bottom: 8.0,
             ),
             child: Row(
               children: [
