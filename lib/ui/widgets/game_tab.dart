@@ -692,7 +692,8 @@ class _GameTabState extends State<GameTab> {
           if (showTime) _buildTableCell(time, flex: 2),
           if (showWagerAndMultiplier) ...[
             _buildTableCell(wager, flex: 2, isCurrency: true),
-            _buildTableCell(multiplier, flex: 1, color: AppColors.primary),
+            _buildTableCell(multiplier,
+                flex: 1, color: AppColors.primary, isMultiplier: true),
           ],
           _buildTableCell(payout, flex: 2, isCurrency: true, alignRight: true),
         ],
@@ -708,6 +709,7 @@ class _GameTabState extends State<GameTab> {
     bool isCurrency = false,
     Color color = Colors.white,
     bool alignRight = false,
+    bool isMultiplier = false,
   }) {
     return Expanded(
       flex: flex,
@@ -722,11 +724,26 @@ class _GameTabState extends State<GameTab> {
                 backgroundImage: AssetImage('assets/images/avt.png')),
           if (icon != null || isUser) const SizedBox(width: 8),
           Flexible(
-            child: Text(
-              isCurrency ? '\$$text' : text,
-              style: TextStyle(color: color, fontSize: 12),
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: isMultiplier
+                ? Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      text,
+                      style: const TextStyle(
+                          color: AppColors.primary, fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                : Text(
+                    isCurrency ? '🪙$text' : text,
+                    style: TextStyle(color: color, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
           ),
         ],
       ),
