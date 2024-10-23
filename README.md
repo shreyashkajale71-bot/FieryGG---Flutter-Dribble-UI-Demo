@@ -20,13 +20,13 @@ FieryGG is a UI demo project built with Flutter, inspired by a design on Dribbbl
 2. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/fiery_gg.git
+   git clone https://github.com/TilarnaExdilika/FieryGG---Flutter-Dribble-UI-Demo
    ```
 
 3. Navigate to the project directory:
 
    ```bash
-   cd fiery_gg
+   cd FieryGG-Flutter-Dribble-UI-Demo
    ```
 
 4. Install dependencies:
