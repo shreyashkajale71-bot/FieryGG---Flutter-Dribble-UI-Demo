@@ -1,4 +1,5 @@
 import 'package:fiery_gg/ui/models/match.dart';
+import 'package:fiery_gg/ui/models/slots.dart';
 import 'package:fiery_gg/ui/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -15,6 +16,7 @@ class _GameTabState extends State<GameTab> {
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
   final ScrollController _matchesScrollController = ScrollController();
+  final ScrollController _slotsScrollController = ScrollController();
   Offset _startPosition = Offset.zero;
 
   @override
@@ -22,6 +24,7 @@ class _GameTabState extends State<GameTab> {
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
     _matchesScrollController.dispose();
+    _slotsScrollController.dispose();
     super.dispose();
   }
 
@@ -60,6 +63,8 @@ class _GameTabState extends State<GameTab> {
         ),
         const SizedBox(height: 10),
         _buildTopMatches(),
+        const SizedBox(height: 20),
+        _buildTopSlots(),
       ],
     );
   }
@@ -459,6 +464,181 @@ class _GameTabState extends State<GameTab> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTopSlots() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+          child: Row(
+            children: [
+              const Icon(
+                FontAwesomeIcons.dice,
+                color: AppColors.unactive,
+                size: 16,
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Top Slots',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.active),
+              ),
+              const Spacer(),
+              _buildNavigationButtons(),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 180,
+          child: _buildSlotsList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSlotsList() {
+    return MouseRegion(
+      onEnter: (_) => _startPosition = Offset.zero,
+      child: Listener(
+        onPointerDown: (event) => _startPosition = event.position,
+        onPointerMove: (event) {
+          if (event.kind == PointerDeviceKind.mouse &&
+              event.buttons == kPrimaryButton) {
+            final delta = _startPosition - event.position;
+            _matchesScrollController.position.moveTo(
+              _matchesScrollController.offset + delta.dx,
+              curve: Curves.linear,
+              duration: Duration.zero,
+            );
+            _startPosition = event.position;
+          }
+        },
+        child: ListView.builder(
+          controller: _matchesScrollController,
+          scrollDirection: Axis.horizontal,
+          itemCount: topSlots.length,
+          itemBuilder: (context, index) => _buildSlotCard(topSlots[index]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSlotCard(Slot slot) {
+    return Container(
+      width: 150,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              slot.imageUrl,
+              fit: BoxFit.cover,
+              width: 150,
+              height: 180,
+            ),
+          ),
+          Positioned.fill(
+            child: MouseRegion(
+              child: _buildHoverOverlay(slot),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHoverOverlay(Slot slot) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return MouseRegion(
+          onEnter: (_) => setState(() => slot.isHovered = true),
+          onExit: (_) => setState(() => slot.isHovered = false),
+          child: AnimatedOpacity(
+            opacity: slot.isHovered ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text('Play'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.play_circle_outline),
+                    label: const Text('Demo'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.container,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNavigationButtons() {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: AppColors.container.withOpacity(0.9),
+              border: Border.all(color: AppColors.container, width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.arrow_left,
+                color: AppColors.active,
+                size: 18,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: AppColors.container.withOpacity(0.9),
+              border: Border.all(color: AppColors.container, width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Icon(
+                Icons.arrow_right,
+                color: AppColors.active,
+                size: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
