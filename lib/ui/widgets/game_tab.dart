@@ -122,7 +122,7 @@ class _GameTabState extends State<GameTab> {
             ],
           ),
         ),
-        SizedBox(child: content),
+        SizedBox(height: 180, child: content),
       ],
     );
   }
