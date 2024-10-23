@@ -556,7 +556,11 @@ class _GameTabState extends State<GameTab> {
       children: [
         _buildLiveBetTabs(),
         const SizedBox(height: 10),
-        _buildLiveBetTable(),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return _buildLiveBetTable(constraints.maxWidth);
+          },
+        ),
       ],
     );
   }
@@ -596,14 +600,22 @@ class _GameTabState extends State<GameTab> {
     );
   }
 
-  Widget _buildLiveBetTable() {
+  Widget _buildLiveBetTable(double width) {
+    final bool showGame = width > 600;
+    final bool showTime = width > 500;
+    final bool showWagerAndMultiplier = width > 400;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
-          _buildTableHeader(),
+          _buildTableHeader(
+            showGame: showGame,
+            showTime: showTime,
+            showWagerAndMultiplier: showWagerAndMultiplier,
+          ),
           ...liveBetData.map((bet) => _buildTableRow(
                 game: bet.game,
                 user: bet.user,
@@ -611,24 +623,32 @@ class _GameTabState extends State<GameTab> {
                 wager: bet.wager,
                 multiplier: bet.multiplier,
                 payout: bet.payout,
+                showGame: showGame,
+                showTime: showTime,
+                showWagerAndMultiplier: showWagerAndMultiplier,
               )),
         ],
       ),
     );
   }
 
-  Widget _buildTableHeader() {
+  Widget _buildTableHeader({
+    required bool showGame,
+    required bool showTime,
+    required bool showWagerAndMultiplier,
+  }) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Row(
         children: [
-          _buildHeaderCell('Game', flex: 3),
+          if (showGame) _buildHeaderCell('Game', flex: 3),
           _buildHeaderCell('User', flex: 2),
-          _buildHeaderCell('Time', flex: 2),
-          _buildHeaderCell('Wager', flex: 2),
-          _buildHeaderCell('Multiplier', flex: 1),
-          _buildHeaderCell('Payout',
-              flex: 4, alignRight: true), // Thêm alignRight: true ở đây
+          if (showTime) _buildHeaderCell('Time', flex: 2),
+          if (showWagerAndMultiplier) ...[
+            _buildHeaderCell('Wager', flex: 2),
+            _buildHeaderCell('Multiplier', flex: 1),
+          ],
+          _buildHeaderCell('Payout', flex: 2, alignRight: true),
         ],
       ),
     );
@@ -659,17 +679,22 @@ class _GameTabState extends State<GameTab> {
     required String wager,
     required String multiplier,
     required String payout,
+    required bool showGame,
+    required bool showTime,
+    required bool showWagerAndMultiplier,
   }) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Row(
         children: [
-          _buildTableCell(game, flex: 3, icon: Icons.casino),
+          if (showGame) _buildTableCell(game, flex: 3, icon: Icons.casino),
           _buildTableCell(user, flex: 2, isUser: true),
-          _buildTableCell(time, flex: 2),
-          _buildTableCell(wager, flex: 2, isCurrency: true),
-          _buildTableCell(multiplier, flex: 1, color: AppColors.primary),
-          _buildTableCell(payout, flex: 4, isCurrency: true, alignRight: true),
+          if (showTime) _buildTableCell(time, flex: 2),
+          if (showWagerAndMultiplier) ...[
+            _buildTableCell(wager, flex: 2, isCurrency: true),
+            _buildTableCell(multiplier, flex: 1, color: AppColors.primary),
+          ],
+          _buildTableCell(payout, flex: 2, isCurrency: true, alignRight: true),
         ],
       ),
     );
@@ -696,9 +721,12 @@ class _GameTabState extends State<GameTab> {
                 radius: 12,
                 backgroundImage: AssetImage('assets/images/avt.png')),
           if (icon != null || isUser) const SizedBox(width: 8),
-          Text(
-            isCurrency ? '\$$text' : text,
-            style: TextStyle(color: color, fontSize: 12),
+          Flexible(
+            child: Text(
+              isCurrency ? '\$$text' : text,
+              style: TextStyle(color: color, fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
