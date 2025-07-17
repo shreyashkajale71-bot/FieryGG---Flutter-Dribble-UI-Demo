@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Plant Store UI',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('Hello Mia', style: TextStyle(fontSize: 24)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Search',
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                CategoryChip(label: 'Popular'),
+                CategoryChip(label: 'Outdoor'),
+                CategoryChip(label: 'Indoor'),
+                CategoryChip(label: 'Top Picks'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return PlantCard(
+                  name: 'Peace Lily',
+                  price: 37,
+                  imageUrl: 'https:                         
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.green[100],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Free Shipping'),
+                Icon(Icons.local_shipping),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CategoryChip extends StatelessWidget {
+  final String label;
+
+  CategoryChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(label),
+    );
+  }
+}
+
+class PlantCard extends StatelessWidget {
+  final String name;
+  final double price;
+  final String imageUrl;
+
+  PlantCard({required this.name, required this.price, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Row(
+        children: [
+          Image.network(imageUrl, width: 100, height: 100, fit: BoxFit.cover),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: TextStyle(fontSize: 18)),
+                  Text('\$${price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PlantDetailsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite_border),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Image.network('https://picsum.photos/200/300', height: 200, width: double.infinity, fit: BoxFit.cover),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Peace Lily', style: TextStyle(fontSize: 24)),
+                Text('Type: Indoor Plant', style: TextStyle(fontSize: 18)),
+                Text('Category: Popular', style: TextStyle(fontSize: 18)),
+                Text('\$37.00', style: TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
